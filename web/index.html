@@ -6,121 +6,119 @@
 <title>Engram — Network Incident Memory</title>
 <style>
   :root{
-    --bg:#070b14; --bg2:#0b1220; --panel:#0e1729; --panel2:#111c33;
-    --line:#1d2b46; --txt:#e7eefc; --muted:#8aa0c6; --dim:#5c7099;
-    --cyan:#22d3ee; --blue:#3b82f6; --green:#22c55e; --amber:#f59e0b;
-    --red:#ef4444; --violet:#a78bfa; --glow:rgba(34,211,238,.35);
+    --bg:#070b14;--bg2:#0b1220;--panel:#0e1729;--panel2:#111c33;--line:#1d2b46;
+    --txt:#e7eefc;--muted:#8aa0c6;--dim:#5c7099;--cyan:#22d3ee;--blue:#3b82f6;
+    --green:#22c55e;--amber:#f59e0b;--red:#ef4444;--violet:#a78bfa;--glow:rgba(34,211,238,.35);
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
-  body{
-    background:radial-gradient(1200px 700px at 80% -10%, #0c1830 0%, var(--bg) 55%) fixed;
-    color:var(--txt); font:15px/1.5 ui-sans-serif,system-ui,Segoe UI,Roboto,Inter,Arial;
-    -webkit-font-smoothing:antialiased;
-  }
+  body{background:radial-gradient(1200px 700px at 80% -10%,#0c1830 0%,var(--bg) 55%) fixed;
+    color:var(--txt);font:15px/1.5 ui-sans-serif,system-ui,Segoe UI,Roboto,Inter,Arial;-webkit-font-smoothing:antialiased}
   a{color:var(--cyan)}
-  .wrap{max-width:1180px;margin:0 auto;padding:22px}
-  /* top bar */
-  .top{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-  .logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:20px;letter-spacing:.3px}
+  .wrap{max-width:1200px;margin:0 auto;padding:20px}
+  .top{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:20px}
   .logo .brain{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
     background:linear-gradient(135deg,#155e75,#1e3a8a);box-shadow:0 0 0 1px var(--line),0 0 22px var(--glow)}
-  .tag{color:var(--muted);font-size:12.5px;margin-left:2px}
+  .tag{color:var(--muted);font-size:12.5px}
   .spacer{flex:1}
   .pill{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);
     padding:7px 12px;border-radius:999px;font-size:13px;color:var(--muted);cursor:pointer}
+  .pill.net{cursor:default;color:var(--txt)}
   .dot{width:9px;height:9px;border-radius:50%;background:var(--dim)}
-  .dot.ok{background:var(--green);box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:pulse 1.8s infinite}
-  .dot.bad{background:var(--red)}
+  .dot.ok{background:var(--green);animation:pulse 1.8s infinite}.dot.bad{background:var(--red)}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
-  /* settings drawer */
-  .settings{display:none;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:16px;gap:12px}
+  .explain{background:linear-gradient(90deg,rgba(34,211,238,.07),rgba(167,139,250,.05));border:1px solid var(--line);
+    border-radius:12px;padding:10px 14px;margin-bottom:14px;color:var(--muted);font-size:13px}
+  .explain b{color:var(--txt)}
+  .settings{display:none;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;gap:12px}
   .settings.open{display:grid;grid-template-columns:1fr 1fr auto;animation:fade .25s}
-  .fld label{display:block;font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
-  input,select,textarea{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--txt);
-    border-radius:10px;padding:10px 12px;font:inherit;outline:none}
+  .fld label{display:block;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+  input,select,textarea{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:10px 12px;font:inherit;outline:none}
   input:focus,textarea:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
   .btn{background:linear-gradient(135deg,var(--cyan),var(--blue));color:#04121f;border:none;font-weight:700;
-    padding:11px 18px;border-radius:10px;cursor:pointer;letter-spacing:.2px;transition:transform .08s, box-shadow .2s}
+    padding:11px 18px;border-radius:10px;cursor:pointer;transition:transform .08s,box-shadow .2s}
   .btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(34,211,238,.25)}
-  .btn:active{transform:translateY(0)}
-  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
-  /* layout */
+  .btn:disabled{opacity:.6;cursor:default;transform:none}
+  .btn.amber{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#1a0b02}
   .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
-  .card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);
-    border-radius:16px;padding:18px;animation:fade .4s}
-  .card h2{margin:.1em 0 .2em;font-size:15px;letter-spacing:.3px}
-  .card .sub{color:var(--dim);font-size:12.5px;margin-bottom:12px}
+  .card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:16px;padding:18px;animation:fade .4s}
+  .card h2{margin:.1em 0 .2em;font-size:15px}.card .sub{color:var(--dim);font-size:12.5px;margin-bottom:12px}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  /* topology */
-  .topo{position:relative}
-  .legend{display:flex;gap:14px;font-size:11.5px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
-  .legend span{display:flex;align-items:center;gap:6px}
-  .swatch{width:10px;height:10px;border-radius:3px}
-  /* tabs */
   .tabs{display:flex;gap:8px;margin:2px 0 14px}
-  .tab{padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel);
-    color:var(--muted);cursor:pointer;font-size:13px}
+  .tab{padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;font-size:13px}
   .tab.active{color:var(--txt);border-color:var(--cyan);background:var(--panel2);box-shadow:0 0 18px rgba(34,211,238,.1)}
-  .page{display:none}
-  .page.active{display:block}
-  /* fault form */
+  .page{display:none}.page.active{display:block}
+  /* live capture strip */
+  .live{border:1px solid rgba(245,158,11,.3);border-radius:14px;padding:14px;margin-bottom:14px;
+    background:linear-gradient(180deg,rgba(245,158,11,.06),rgba(34,211,238,.03))}
+  .live .lh{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .live .lh .t{font-weight:650}
+  .feed{margin-top:12px;display:grid;gap:8px}
+  .feeditem{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:9px 12px;
+    background:var(--panel);animation:slidein .4s both}
+  .feeditem .ic{width:26px;height:26px;border-radius:7px;background:#10243e;display:grid;place-items:center}
+  .feeditem .meta{font-size:12.5px}.feeditem .meta small{color:var(--dim)}
   .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px}
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-  .chip{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);
-    color:var(--muted);cursor:pointer;font-size:12.5px;user-select:none;transition:.15s}
+  .chip{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--muted);cursor:pointer;font-size:12.5px;user-select:none}
   .chip.on{color:#04121f;background:linear-gradient(135deg,var(--cyan),var(--blue));border-color:transparent;font-weight:600}
-  /* result cards */
-  .hit{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px;background:var(--panel);
-    animation:slidein .35s both}
+  .hit{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px;background:var(--panel);animation:slidein .35s both}
   @keyframes slidein{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
   .hit .hrow{display:flex;align-items:center;gap:10px}
-  .rank{width:26px;height:26px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);
-    display:grid;place-items:center;font-weight:700;font-size:12px;color:var(--cyan)}
+  .rank{width:26px;height:26px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:12px;color:var(--cyan)}
   .htitle{font-weight:650}
   .scoreboard{display:flex;gap:16px;margin-left:auto;text-align:right}
-  .scoreboard b{font-size:15px}.scoreboard small{display:block;color:var(--dim);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px}
+  .scoreboard b{font-size:15px}.scoreboard small{display:block;color:var(--dim);font-size:10.5px;text-transform:uppercase}
   .bar{height:6px;border-radius:4px;background:var(--line);margin-top:10px;overflow:hidden}
-  .bar > i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,var(--cyan),var(--blue));
-    transition:width 1s cubic-bezier(.2,.8,.2,1)}
+  .bar>i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,var(--cyan),var(--blue));transition:width 1s cubic-bezier(.2,.8,.2,1)}
   .why{color:var(--muted);font-size:12.5px;margin-top:9px}
   .badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:999px;margin-top:9px;margin-right:6px}
   .b-fail{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.35)}
   .b-stale{background:rgba(245,158,11,.12);color:#fcd34d;border:1px solid rgba(245,158,11,.35)}
   .b-ok{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.35)}
-  /* ai panel */
-  .ai{margin-top:14px;border:1px solid rgba(167,139,250,.35);border-radius:14px;padding:16px;
-    background:linear-gradient(180deg,rgba(167,139,250,.08),rgba(59,130,246,.05))}
+  .ai{margin-top:14px;border:1px solid rgba(167,139,250,.35);border-radius:14px;padding:16px;background:linear-gradient(180deg,rgba(167,139,250,.08),rgba(59,130,246,.05))}
   .ai h3{margin:0 0 4px;display:flex;align-items:center;gap:8px;font-size:14px}
   .ai .conf{margin-left:auto;font-size:11px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
   .ai .lab{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--violet);margin-top:12px}
-  .ai .val{margin-top:3px}
   .warn{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:9px 12px;margin-top:8px;color:#fca5a5;font-size:13px}
-  /* stats */
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
   .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
-  .kpi .n{font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--cyan),var(--violet));
-    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .kpi .n{font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
   .kpi .l{color:var(--muted);font-size:12px;margin-top:4px}
   table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
-  th{color:var(--dim);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+  th{color:var(--dim);font-weight:600;font-size:11px;text-transform:uppercase}
   tr:hover td{background:rgba(255,255,255,.02)}
-  .muted{color:var(--muted)} .err{color:#fca5a5}
-  .empty{color:var(--dim);text-align:center;padding:26px}
-  .spin{width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--cyan);border-radius:50%;
-    display:inline-block;animation:rot .8s linear infinite;vertical-align:-3px}
+  .muted{color:var(--muted)}.err{color:#fca5a5}.empty{color:var(--dim);text-align:center;padding:24px}
+  .spin{width:15px;height:15px;border:2px solid var(--line);border-top-color:var(--cyan);border-radius:50%;display:inline-block;animation:rot .8s linear infinite;vertical-align:-3px}
   @keyframes rot{to{transform:rotate(360deg)}}
+  /* toasts */
+  #toasts{position:fixed;bottom:18px;right:18px;display:flex;flex-direction:column;gap:10px;z-index:90;max-width:380px}
+  .toast{display:flex;align-items:flex-start;gap:10px;background:rgba(17,28,51,.92);backdrop-filter:blur(8px);
+    border:1px solid var(--line);border-left:3px solid var(--cyan);padding:12px 14px;border-radius:12px;font-size:13px;
+    line-height:1.45;box-shadow:0 16px 40px rgba(0,0,0,.5);animation:tin .28s cubic-bezier(.2,.9,.2,1) both}
+  .toast .tx{flex:1}.toast .ti{font-size:15px;line-height:1.2}
+  .toast.ok{border-left-color:var(--green)}.toast.err{border-left-color:var(--red)}.toast.warn{border-left-color:var(--amber)}.toast.load{border-left-color:var(--cyan)}
+  @keyframes tin{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+  .toast.out{animation:tout .3s both}@keyframes tout{to{opacity:0;transform:translateY(8px) scale(.98)}}
   @media(max-width:920px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.settings.open{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+<div id="toasts"></div>
 <div class="wrap">
   <div class="top">
     <div class="logo"><span class="brain">🧠</span> Engram <span class="tag">network incident memory</span></div>
     <div class="spacer"></div>
+    <div class="pill net" title="A network = one company's isolated memory. Engram is multi-tenant; this is the one your API key belongs to."><span>🌐</span><span id="netName">network…</span></div>
     <div class="pill" id="healthPill"><span class="dot" id="healthDot"></span><span id="healthTxt">connecting…</span></div>
     <div class="pill" onclick="toggleSettings()">⚙︎ Settings</div>
+  </div>
+
+  <div class="explain">
+    <b>How to read this:</b> <b>Incidents</b> = real past problems captured from your devices (the memory).
+    <b>New Fault</b> = describe something happening <i>now</i> to get matched against that memory. Pull real data with the <b>Live Cisco capture</b> button below.
   </div>
 
   <div class="settings" id="settings">
@@ -130,7 +128,6 @@
   </div>
 
   <div class="grid">
-    <!-- LEFT: query + results -->
     <div>
       <div class="card">
         <div class="tabs">
@@ -139,17 +136,28 @@
           <div class="tab" data-tab="stats" onclick="tab('stats')">📊 Stats</div>
         </div>
 
-        <!-- NEW FAULT -->
         <div class="page active" id="page-fault">
+          <!-- LIVE CISCO CAPTURE -->
+          <div class="live">
+            <div class="lh">
+              <span style="font-size:18px">⚡</span>
+              <div class="t">Live Cisco capture</div>
+              <span class="muted" style="font-size:12px">— SSH into a real Cisco IOS XE device (DevNet) and store its output as an incident.</span>
+              <div style="flex:1"></div>
+              <button class="btn amber" id="capBtn" onclick="pullLive()">Pull live data</button>
+            </div>
+            <div class="feed" id="feed"></div>
+          </div>
+
           <h2>Describe the fault</h2>
-          <div class="sub">Engram searches this network's memory and reasons over the closest past incidents.</div>
+          <div class="sub">Engram searches <b id="netInline">this network</b>'s memory and reasons over the closest past incidents.</div>
           <textarea id="desc" rows="3" placeholder="e.g. R3 not learning Site A routes, BGP session is up, AS-path filtering suspected"></textarea>
           <div class="row">
             <div class="fld"><label>Layer</label><select id="layer"><option value="">—</option><option>L1</option><option>L2</option><option selected>L3</option><option>L4</option><option>L7</option></select></div>
             <div class="fld"><label>Scope</label><select id="scope"><option value="">—</option><option>DEVICE</option><option selected>LINK</option><option>SITE</option><option>NETWORK_WIDE</option></select></div>
             <div class="fld"><label>Severity</label><select id="sev"><option value="">—</option><option>SEV1</option><option selected>SEV2</option><option>SEV3</option><option>SEV4</option></select></div>
           </div>
-          <label style="font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;margin-top:12px;display:block">Protocols</label>
+          <label style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;margin-top:12px;display:block">Protocols</label>
           <div class="chips" id="protoChips"></div>
           <div class="row" style="grid-template-columns:1fr 1fr">
             <div class="fld"><label>Devices (comma sep)</label><input id="devices" placeholder="R3, R2"></div>
@@ -162,41 +170,32 @@
           <div id="results"></div>
         </div>
 
-        <!-- INCIDENTS -->
         <div class="page" id="page-incidents">
-          <h2>Incidents</h2><div class="sub">Everything this network remembers.</div>
+          <h2>Incidents <span class="muted" style="font-weight:400">— the memory (real captured problems)</span></h2>
+          <div class="sub">Everything <b id="netInline2">this network</b> remembers. Pull more with Live Cisco capture.</div>
           <div id="incList" class="empty">Loading…</div>
         </div>
 
-        <!-- STATS -->
         <div class="page" id="page-stats">
           <h2>Stats</h2><div class="sub">Memory health at a glance.</div>
-          <div class="kpis" id="kpis"></div>
-          <div id="statBreak"></div>
+          <div class="kpis" id="kpis"></div><div id="statBreak"></div>
         </div>
       </div>
     </div>
 
-    <!-- RIGHT: live topology -->
     <div>
       <div class="card topo">
         <h2>Live topology</h2>
         <div class="sub">Two sites · eBGP between, OSPF inside. Nodes glow when a fault touches them.</div>
         <svg id="svg" viewBox="0 0 460 300" width="100%" style="margin-top:6px">
-          <defs>
-            <filter id="g"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2a3c5e"/></marker>
-          </defs>
-          <!-- site labels -->
+          <defs><filter id="g"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
           <text x="78" y="28" fill="#5c7099" font-size="11" letter-spacing="1">SITE A · AS 65001</text>
           <text x="300" y="28" fill="#5c7099" font-size="11" letter-spacing="1">SITE B · AS 65002</text>
-          <!-- links -->
-          <line class="lnk" id="l-h1" x1="60" y1="210" x2="120" y2="150"/>
-          <line class="lnk" id="l-12" x1="120" y1="150" x2="120" y2="80"/>
+          <line class="lnk" x1="60" y1="210" x2="120" y2="150"/>
+          <line class="lnk" x1="120" y1="150" x2="120" y2="80"/>
           <line class="lnk ebgp" id="l-23" x1="120" y1="80" x2="340" y2="80"/>
-          <line class="lnk" id="l-34" x1="340" y1="80" x2="340" y2="150"/>
-          <line class="lnk" id="l-h2" x1="340" y1="150" x2="400" y2="210"/>
-          <!-- nodes -->
+          <line class="lnk" x1="340" y1="80" x2="340" y2="150"/>
+          <line class="lnk" x1="340" y1="150" x2="400" y2="210"/>
           <g class="node" id="n-R1"><circle cx="120" cy="80" r="20"/><text x="120" y="84">R1</text></g>
           <g class="node" id="n-R2"><circle cx="120" cy="150" r="20"/><text x="120" y="154">R2</text></g>
           <g class="node" id="n-R3"><circle cx="340" cy="80" r="20"/><text x="340" y="84">R3</text></g>
@@ -204,11 +203,8 @@
           <g class="host" id="n-h1"><rect x="40" y="200" width="40" height="26" rx="6"/><text x="60" y="217">h1</text></g>
           <g class="host" id="n-h2"><rect x="380" y="200" width="40" height="26" rx="6"/><text x="400" y="217">h2</text></g>
         </svg>
-        <div class="legend">
-          <span><i class="swatch" style="background:var(--green)"></i>healthy</span>
-          <span><i class="swatch" style="background:var(--cyan)"></i>matched</span>
-          <span><i class="swatch" style="background:var(--red)"></i>fault</span>
-          <span><i class="swatch" style="background:#2a3c5e"></i>eBGP link</span>
+        <div class="legend" style="display:flex;gap:14px;font-size:11.5px;color:var(--muted);margin-top:8px;flex-wrap:wrap">
+          <span>🟢 healthy</span><span>🔵 matched</span><span>🔴 fault</span><span>┄ eBGP link</span>
         </div>
       </div>
       <div class="card" style="margin-top:16px">
@@ -220,12 +216,10 @@
 </div>
 
 <style>
-  /* svg node styling kept here to keep <style> above lean */
-  .node circle{fill:#10243e;stroke:#22c55e;stroke-width:2;filter:url(#g);transition:stroke .4s, fill .4s}
+  .node circle{fill:#10243e;stroke:#22c55e;stroke-width:2;filter:url(#g);transition:stroke .4s,fill .4s}
   .node text,.host text{fill:#dbe7ff;font-size:12px;font-weight:700;text-anchor:middle;dominant-baseline:middle}
   .host rect{fill:#0e1729;stroke:#2a3c5e;stroke-width:1.5}
-  .node.match circle{stroke:#22d3ee}
-  .node.fault circle{stroke:#ef4444;fill:#2a0e16}
+  .node.match circle{stroke:#22d3ee}.node.fault circle{stroke:#ef4444;fill:#2a0e16}
   .lnk{stroke:#27406a;stroke-width:2.5;stroke-linecap:round}
   .lnk.ebgp{stroke-dasharray:6 7;animation:flow 1.1s linear infinite}
   .lnk.live{stroke:#22d3ee;stroke-dasharray:5 6;animation:flow .8s linear infinite}
@@ -233,166 +227,173 @@
 </style>
 
 <script>
-const $ = s => document.querySelector(s);
-const PROTOS = ["BGP","OSPF","MTU","ACL","STP","VLAN","ARP","DNS","DHCP","NAT","EIGRP","QOS"];
-let cfg = { url: localStorage.getItem('engram_url')||'http://localhost:8000', key: localStorage.getItem('engram_key')||'local-dev-key' };
-const sel = new Set(["BGP"]);
+const $=s=>document.querySelector(s);
+const PROTOS=["BGP","OSPF","MTU","ACL","STP","VLAN","ARP","DNS","DHCP","NAT","EIGRP","QOS"];
+let cfg={url:localStorage.getItem('engram_url')||'http://localhost:8000',key:localStorage.getItem('engram_key')||'local-dev-key'};
+const sel=new Set(["BGP"]);
 
-function toggleSettings(){ $('#settings').classList.toggle('open'); }
+/* ---- toasts ---- */
+function icon(t){return t==='ok'?'✅':t==='err'?'⛔':t==='warn'?'⚠️':t==='load'?'<span class="spin"></span>':'🔔';}
+function toast(msg,type='info',ms=3600){
+  const c=$('#toasts'); const el=document.createElement('div'); el.className='toast '+type;
+  el.innerHTML='<span class="ti">'+icon(type)+'</span><span class="tx">'+msg+'</span>'; c.appendChild(el);
+  const close=()=>{el.classList.add('out');setTimeout(()=>el.remove(),300)};
+  if(ms) setTimeout(close,ms);
+  return {el,close,update:(m,t)=>{el.className='toast '+(t||type);el.querySelector('.ti').innerHTML=icon(t||type);el.querySelector('.tx').innerHTML=m;}};
+}
+
+function toggleSettings(){$('#settings').classList.toggle('open');}
 function tab(t){
-  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active', x.dataset.tab===t));
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   $('#page-'+t).classList.add('active');
-  if(t==='incidents') loadIncidents();
-  if(t==='stats') loadStats();
+  if(t==='incidents')loadIncidents(); if(t==='stats')loadStats();
 }
-function headers(){ return { 'Content-Type':'application/json', 'X-API-Key': cfg.key }; }
-
-function initChips(){
-  const c=$('#protoChips'); c.innerHTML='';
-  PROTOS.forEach(p=>{
-    const el=document.createElement('div');
-    el.className='chip'+(sel.has(p)?' on':''); el.textContent=p;
-    el.onclick=()=>{ sel.has(p)?sel.delete(p):sel.add(p); el.classList.toggle('on'); };
-    c.appendChild(el);
-  });
-}
+function headers(){return{'Content-Type':'application/json','X-API-Key':cfg.key};}
+function initChips(){const c=$('#protoChips');c.innerHTML='';PROTOS.forEach(p=>{const el=document.createElement('div');
+  el.className='chip'+(sel.has(p)?' on':'');el.textContent=p;el.onclick=()=>{sel.has(p)?sel.delete(p):sel.add(p);el.classList.toggle('on');};c.appendChild(el);});}
 function saveSettings(){
-  cfg.url=$('#apiUrl').value.trim().replace(/\/$/,'')||cfg.url;
-  cfg.key=$('#apiKey').value.trim()||cfg.key;
-  localStorage.setItem('engram_url',cfg.url); localStorage.setItem('engram_key',cfg.key);
-  health(); toggleSettings();
+  cfg.url=$('#apiUrl').value.trim().replace(/\/$/,'')||cfg.url; cfg.key=$('#apiKey').value.trim()||cfg.key;
+  localStorage.setItem('engram_url',cfg.url);localStorage.setItem('engram_key',cfg.key);
+  toast('Settings saved','ok'); health(); whoami(); toggleSettings();
 }
 async function health(){
-  const dot=$('#healthDot'), txt=$('#healthTxt');
+  const dot=$('#healthDot'),txt=$('#healthTxt');
+  try{const r=await fetch(cfg.url+'/health');const j=await r.json();const ok=j.status==='ok';
+    dot.className='dot '+(ok?'ok':'bad');txt.textContent=ok?'API healthy · pg+qdrant':'degraded';}
+  catch(e){dot.className='dot bad';txt.textContent='API unreachable';}
+}
+async function whoami(){
+  try{const r=await fetch(cfg.url+'/v1/whoami',{headers:headers()});
+    if(!r.ok){$('#netName').textContent='auth?';return;}
+    const j=await r.json(); const n=j.network_id||'—';
+    $('#netName').textContent=n; document.querySelectorAll('#netInline,#netInline2').forEach(x=>x.textContent=n);
+  }catch(e){$('#netName').textContent='offline';}
+}
+
+/* ---- live Cisco capture ---- */
+function simpleErr(err){
+  const e=(err||'').toLowerCase();
+  if(e.includes('timeout')||e.includes('tcp connection')) return "The Cisco device didn't answer in time. It may be unreachable from your API server (firewall/outbound SSH blocked), or the sandbox host changed.";
+  if(e.includes('authentication')||e.includes('password')||e.includes('auth')) return "The username/password was rejected. DevNet sandbox credentials rotate — get current ones from developer.cisco.com and pass host/user/password.";
+  if(e.includes('resolve')||e.includes('name or service')||e.includes('getaddrinfo')) return "The device hostname couldn't be found (DNS). Check the sandbox host name.";
+  if(e.includes('refused')) return "The device refused the SSH connection (port 22 closed or blocked).";
+  return err||'unknown error';
+}
+async function pullLive(){
+  const b=$('#capBtn'); b.disabled=true; b.textContent='Connecting…';
+  const t=toast('Connecting to a real Cisco IOS XE device over SSH…','load',0);
   try{
-    const r=await fetch(cfg.url+'/health'); const j=await r.json();
-    const ok=j.status==='ok'; dot.className='dot '+(ok?'ok':'bad');
-    txt.textContent = ok ? 'API healthy · pg+qdrant' : 'degraded';
-  }catch(e){ dot.className='dot bad'; txt.textContent='API unreachable'; }
+    const r=await fetch(cfg.url+'/v1/capture/devnet',{method:'POST',headers:headers(),body:JSON.stringify({protocols:[...sel]})});
+    if(r.status===404){
+      t.update('Your API server is running old code','err'); setTimeout(t.close,5000);
+      toast('This button needs the new <b>/v1/capture/devnet</b> route, which your server doesn\'t have yet. Stop it, run <b>pip install -e .</b> in the project folder, then start it again.','err',12000);
+      return;
+    }
+    if(r.status===401){ t.update('Wrong API key','err'); setTimeout(t.close,4000); toast('401 Unauthorized — open ⚙︎ Settings and set the correct API Key.','err',7000); return; }
+    let d; try{ d=await r.json(); }catch(_){ t.update('Unexpected reply','err'); setTimeout(t.close,4000); toast('The server replied in an unexpected format (HTTP '+r.status+').','err',7000); return; }
+    if(d.ok){
+      t.update('Captured '+d.commands+' commands from '+d.device,'ok'); setTimeout(t.close,3500);
+      toast('Stored a real Cisco incident in your network\'s memory.','ok');
+      addFeed(d.device, d.commands, d.title); flashTopo();
+    } else {
+      t.update('Could not read the Cisco device','err'); setTimeout(t.close,5000);
+      toast('<b>Live capture failed.</b> '+simpleErr(d.error)+(d.sandbox?(' <span class="muted">(tried '+esc(d.sandbox)+')</span>'):''),'err',12000);
+    }
+  }catch(e){
+    t.update('Cannot reach your API','err'); setTimeout(t.close,4000);
+    toast('Could not reach the API at <b>'+esc(cfg.url)+'</b>. Is <b>serve</b> running? ('+esc(e.message)+')','err',9000);
+  }
+  finally{ b.disabled=false; b.textContent='Pull live data'; }
 }
+function addFeed(device,cmds,title){
+  const f=$('#feed');
+  const el=document.createElement('div'); el.className='feeditem';
+  const time=new Date().toLocaleTimeString();
+  el.innerHTML='<div class="ic">📡</div><div class="meta"><div>'+esc(title||('Live snapshot — '+device))+'</div><small>'+device+' · '+cmds+' commands · '+time+'</small></div>';
+  f.prepend(el); while(f.children.length>5) f.lastChild.remove();
+}
+function flashTopo(){ document.querySelectorAll('.node').forEach(n=>{n.classList.add('match');setTimeout(()=>n.classList.remove('match'),1400);}); $('#l-23').classList.add('live'); setTimeout(()=>$('#l-23').classList.remove('live'),1400); }
 
-function resetTopo(){
-  document.querySelectorAll('.node').forEach(n=>n.classList.remove('match','fault'));
-  document.querySelectorAll('.lnk').forEach(l=>l.classList.remove('live'));
-}
-function lightTopo(devices, fault){
-  resetTopo();
-  (devices||[]).forEach(d=>{ const n=$('#n-'+d.trim()); if(n) n.classList.add(fault?'fault':'match'); });
-  $('#l-23').classList.add('live');
-}
-
+/* ---- query ---- */
+function resetTopo(){document.querySelectorAll('.node').forEach(n=>n.classList.remove('match','fault'));$('#l-23').classList.remove('live');}
+function lightTopo(devs,fault){resetTopo();(devs||[]).forEach(d=>{const n=$('#n-'+d.trim());if(n)n.classList.add(fault?'fault':'match');});$('#l-23').classList.add('live');}
 async function runQuery(){
-  const btn=$('#searchBtn'); const out=$('#results');
-  const desc=$('#desc').value.trim();
-  if(!desc){ out.innerHTML='<div class="empty">Type a fault description first.</div>'; return; }
+  const btn=$('#searchBtn'),out=$('#results'),desc=$('#desc').value.trim();
+  if(!desc){toast('Type a fault description first','warn');return;}
   const devices=$('#devices').value.split(',').map(s=>s.trim()).filter(Boolean);
-  const body={ network_id:'from-auth', description:desc,
-    protocols:[...sel], affected_layer:$('#layer').value||null, scope:$('#scope').value||null,
-    severity:$('#sev').value||null, devices, current_topology_hash:$('#topo').value.trim()||null };
+  const body={network_id:'from-auth',description:desc,protocols:[...sel],affected_layer:$('#layer').value||null,
+    scope:$('#scope').value||null,severity:$('#sev').value||null,devices,current_topology_hash:$('#topo').value.trim()||null};
   const reason=$('#useLLM').checked;
-  btn.disabled=true; btn.innerHTML='<span class="spin"></span> Searching…';
-  lightTopo(devices,false);
-  out.innerHTML='';
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> Searching…';lightTopo(devices,false);out.innerHTML='';
+  const t=toast('Searching network memory'+(reason?' + asking the LLM…':'…'),'load',0);
   try{
     const r=await fetch(cfg.url+'/v1/query?reason_enabled='+reason,{method:'POST',headers:headers(),body:JSON.stringify(body)});
-    if(r.status===401){ out.innerHTML='<div class="hit err">401 Unauthorized — set the right API Key in ⚙︎ Settings.</div>'; return; }
-    const d=await r.json();
-    renderResults(d);
-    const failed = (d.retrieved||[]).some(x=>x.outcome_flag && x.outcome_flag.includes('FAILED'));
-    lightTopo(devices, failed);
-  }catch(e){ out.innerHTML='<div class="hit err">Request failed: '+e.message+'. Check API URL in Settings.</div>'; }
-  finally{ btn.disabled=false; btn.textContent='Search memory'; }
+    if(r.status===401){t.update('401 — set the API key in Settings','err');setTimeout(t.close,3500);out.innerHTML='<div class="hit err">401 Unauthorized — open ⚙︎ Settings and set the right API Key.</div>';return;}
+    const d=await r.json(); renderResults(d);
+    const n=(d.retrieved||[]).length;
+    const failed=(d.retrieved||[]).some(x=>x.outcome_flag&&x.outcome_flag.includes('FAILED'));
+    lightTopo(devices,failed);
+    t.update(n?('Found '+n+' similar incident'+(n>1?'s':'')):'No matches yet', n?'ok':'warn'); setTimeout(t.close,3000);
+    if(failed) toast('A prior fix FAILED — see the warning','warn',6000);
+  }catch(e){t.update('Request failed','err');setTimeout(t.close,3000);out.innerHTML='<div class="hit err">Request failed: '+e.message+'. Check API URL in Settings.</div>';}
+  finally{btn.disabled=false;btn.textContent='Search memory';}
 }
-
-function badge(cls,txt){ return '<span class="badge '+cls+'">'+txt+'</span>'; }
+function badge(c,t){return '<span class="badge '+c+'">'+t+'</span>';}
 function renderResults(d){
-  const out=$('#results');
-  const hits=d.retrieved||[];
-  if(!hits.length){ out.innerHTML='<div class="empty">No prior incidents in memory yet. Capture some first.</div>'; return; }
+  const out=$('#results'),hits=d.retrieved||[];
+  if(!hits.length){out.innerHTML='<div class="empty">No prior incidents in memory yet. Use <b>Pull live data</b> or capture some.</div>';return;}
   let html='<h2 style="margin-top:18px">Top matches</h2>';
-  hits.forEach((r,i)=>{
-    const inc=r.incident, o=inc.outcome.status, st=r.staleness||{};
-    let b='';
-    if(o==='RESOLVED') b+=badge('b-ok','✓ resolved before');
-    if(r.outcome_flag && r.outcome_flag.includes('FAILED')) b+=badge('b-fail','⚠ prior fix FAILED');
-    if(st.stale) b+=badge('b-stale','🕑 stale '+st.age_days+'d');
-    html+=`<div class="hit" style="animation-delay:${i*70}ms">
-      <div class="hrow"><div class="rank">${i+1}</div>
-        <div class="htitle">${esc(inc.title||inc.symptom.description.slice(0,48))}</div>
-        <div class="scoreboard">
-          <div><b>${(r.final_score).toFixed(3)}</b><small>final</small></div>
-          <div><b>${(r.vector_score).toFixed(3)}</b><small>vector</small></div>
-          <div><b>${(r.structured_score).toFixed(3)}</b><small>structured</small></div>
-        </div></div>
+  hits.forEach((r,i)=>{const inc=r.incident,o=inc.outcome.status,st=r.staleness||{};let b='';
+    if(o==='RESOLVED')b+=badge('b-ok','✓ resolved before');
+    if(r.outcome_flag&&r.outcome_flag.includes('FAILED'))b+=badge('b-fail','⚠ prior fix FAILED');
+    if(st.stale)b+=badge('b-stale','🕑 stale '+st.age_days+'d');
+    html+=`<div class="hit" style="animation-delay:${i*70}ms"><div class="hrow"><div class="rank">${i+1}</div>
+      <div class="htitle">${esc(inc.title||inc.symptom.description.slice(0,48))}</div>
+      <div class="scoreboard"><div><b>${r.final_score.toFixed(3)}</b><small>final</small></div>
+      <div><b>${r.vector_score.toFixed(3)}</b><small>vector</small></div>
+      <div><b>${r.structured_score.toFixed(3)}</b><small>structured</small></div></div></div>
       <div class="bar"><i data-w="${Math.min(100,r.final_score*100)}"></i></div>
-      <div class="why">🔎 ${esc(r.match_explanation)}</div>
-      <div>${b}</div></div>`;
-  });
-  // AI panel
-  if(d.reasoning){
-    const a=d.reasoning;
+      <div class="why">🔎 ${esc(r.match_explanation)}</div><div>${b}</div></div>`;});
+  if(d.reasoning){const a=d.reasoning;
     let w=(a.warnings||[]).map(x=>'<div class="warn">⚠ '+esc(x)+'</div>').join('');
-    let cmp=(a.comparisons||[]).map(c=>`<div class="val">• <b>${c.similarity_pct}%</b> like an incident — ${esc(c.rationale)}${(c.key_differences||[]).length?' <span class="muted">(diff: '+esc(c.key_differences.join(', '))+')</span>':''}</div>`).join('');
-    html+=`<div class="ai">
-      <h3>🤖 AI comparative analysis <span class="conf">confidence: ${esc(a.confidence)}</span></h3>
-      <div class="lab">Recommended hypothesis</div><div class="val">${esc(a.recommended_hypothesis)}</div>
-      <div class="lab">Recommended fix (adapt &amp; verify)</div><div class="val">${esc(a.recommended_fix)}</div>
-      ${cmp?'<div class="lab">Comparisons</div>'+cmp:''}
-      ${w}
-      <div class="muted" style="margin-top:12px;font-size:12px">🔒 Decision support — a human must approve. requires_human_approval = ${a.requires_human_approval}</div>
-    </div>`;
-  } else if(d.reasoning_error){
-    html+=`<div class="ai"><h3>🤖 AI analysis</h3><div class="muted">${esc(d.reasoning_error)}</div></div>`;
-  }
+    let cmp=(a.comparisons||[]).map(c=>`<div>• <b>${c.similarity_pct}%</b> like an incident — ${esc(c.rationale)}${(c.key_differences||[]).length?' <span class="muted">(diff: '+esc(c.key_differences.join(', '))+')</span>':''}</div>`).join('');
+    html+=`<div class="ai"><h3>🤖 AI comparative analysis <span class="conf">confidence: ${esc(a.confidence)}</span></h3>
+      <div class="lab">Recommended hypothesis</div><div>${esc(a.recommended_hypothesis)}</div>
+      <div class="lab">Recommended fix (adapt &amp; verify)</div><div>${esc(a.recommended_fix)}</div>
+      ${cmp?'<div class="lab">Comparisons</div>'+cmp:''}${w}
+      <div class="muted" style="margin-top:12px;font-size:12px">🔒 Decision support — a human must approve. requires_human_approval = ${a.requires_human_approval}</div></div>`;
+  } else if(d.reasoning_error){ html+=`<div class="ai"><h3>🤖 AI analysis</h3><div class="muted">${esc(d.reasoning_error)}</div></div>`; }
   out.innerHTML=html;
-  // animate score bars
-  requestAnimationFrame(()=>document.querySelectorAll('.bar > i').forEach(b=>b.style.width=b.dataset.w+'%'));
+  requestAnimationFrame(()=>document.querySelectorAll('.bar>i').forEach(b=>b.style.width=b.dataset.w+'%'));
 }
 
 async function loadIncidents(){
-  const el=$('#incList'); el.className=''; el.innerHTML='<div class="empty"><span class="spin"></span> loading…</div>';
-  try{
-    const r=await fetch(cfg.url+'/v1/incidents?limit=100',{headers:headers()});
-    if(!r.ok){ el.innerHTML='<div class="empty err">'+r.status+' — check API key in Settings.</div>'; return; }
+  const el=$('#incList');el.className='';el.innerHTML='<div class="empty"><span class="spin"></span> loading…</div>';
+  try{const r=await fetch(cfg.url+'/v1/incidents?limit=100',{headers:headers()});
+    if(!r.ok){el.innerHTML='<div class="empty err">'+r.status+' — check API key in Settings.</div>';return;}
     const rows=await r.json();
-    if(!rows.length){ el.innerHTML='<div class="empty">No incidents yet.</div>'; return; }
+    if(!rows.length){el.innerHTML='<div class="empty">No incidents yet. Click <b>Pull live data</b> on the New Fault tab.</div>';return;}
     let h='<table><thead><tr><th>Title</th><th>Signature</th><th>Proto</th><th>Layer</th><th>Outcome</th></tr></thead><tbody>';
-    rows.forEach(i=>{ const o=i.outcome.status;
-      const c=o==='FAILED'?'#fca5a5':o==='RESOLVED'?'#86efac':'#cbd5e1';
-      h+=`<tr><td>${esc(i.title||'—')}</td><td class="muted">${esc(i.symptom.signature)}</td>
-        <td class="muted">${i.symptom.protocols.join(', ')}</td><td class="muted">${i.symptom.affected_layer}</td>
-        <td style="color:${c};font-weight:600">${o}</td></tr>`; });
+    rows.forEach(i=>{const o=i.outcome.status;const c=o==='FAILED'?'#fca5a5':o==='RESOLVED'?'#86efac':'#cbd5e1';
+      h+=`<tr><td>${esc(i.title||'—')}</td><td class="muted">${esc(i.symptom.signature)}</td><td class="muted">${i.symptom.protocols.join(', ')}</td><td class="muted">${i.symptom.affected_layer}</td><td style="color:${c};font-weight:600">${o}</td></tr>`;});
     el.innerHTML=h+'</tbody></table>';
-  }catch(e){ el.innerHTML='<div class="empty err">'+e.message+'</div>'; }
+  }catch(e){el.innerHTML='<div class="empty err">'+e.message+'</div>';}
 }
-
 async function loadStats(){
-  try{
-    const r=await fetch(cfg.url+'/v1/stats',{headers:headers()}); const s=await r.json();
-    const k=$('#kpis');
-    k.innerHTML='';
-    addKpi(k,'Incidents', s.total||0);
-    addKpi(k,'FAILED remembered', s.failed_fixes_remembered||0);
-    addKpi(k,'Avg MTTR (s)', s.avg_mttr_seconds||0);
+  try{const r=await fetch(cfg.url+'/v1/stats',{headers:headers()});const s=await r.json();const k=$('#kpis');k.innerHTML='';
+    addKpi(k,'Incidents',s.total||0);addKpi(k,'FAILED remembered',s.failed_fixes_remembered||0);addKpi(k,'Avg MTTR (s)',s.avg_mttr_seconds||0);
     let h='<h2 style="margin-top:18px;font-size:14px">By protocol</h2><table><tbody>';
     Object.entries(s.by_protocol||{}).forEach(([p,n])=>h+=`<tr><td>${p}</td><td class="muted">${n}</td></tr>`);
-    h+='</tbody></table>';
-    $('#statBreak').innerHTML=h;
-  }catch(e){ $('#kpis').innerHTML='<div class="empty err">'+e.message+'</div>'; }
+    $('#statBreak').innerHTML=h+'</tbody></table>';
+  }catch(e){$('#kpis').innerHTML='<div class="empty err">'+e.message+'</div>';}
 }
-function addKpi(parent,label,val){
-  const d=document.createElement('div'); d.className='kpi';
-  d.innerHTML='<div class="n">0</div><div class="l">'+label+'</div>'; parent.appendChild(d);
-  const n=d.querySelector('.n'); let cur=0; const step=Math.max(1,Math.ceil(val/30));
-  const t=setInterval(()=>{ cur+=step; if(cur>=val){cur=val;clearInterval(t)} n.textContent=cur; },18);
-}
+function addKpi(p,label,val){const d=document.createElement('div');d.className='kpi';d.innerHTML='<div class="n">0</div><div class="l">'+label+'</div>';p.appendChild(d);
+  const n=d.querySelector('.n');let cur=0;const step=Math.max(1,Math.ceil(val/30));const t=setInterval(()=>{cur+=step;if(cur>=val){cur=val;clearInterval(t)}n.textContent=cur;},18);}
+function esc(s){return(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
-function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-
-// boot
-$('#apiUrl').value=cfg.url; $('#apiKey').value=cfg.key;
-initChips(); health(); setInterval(health, 15000);
+$('#apiUrl').value=cfg.url;$('#apiKey').value=cfg.key;
+initChips();health();whoami();setInterval(health,15000);
 </script>
 </body>
 </html>
