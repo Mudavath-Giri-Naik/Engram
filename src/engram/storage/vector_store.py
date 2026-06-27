@@ -21,8 +21,22 @@ from engram.domain.models import Incident
 
 @lru_cache(maxsize=1)
 def get_qdrant() -> QdrantClient:
+    """Qdrant client. QDRANT_URL selects the mode:
+      - http(s)://host:port  -> remote server (production / docker compose)
+      - ":memory:"           -> embedded in-memory (single process; not shared)
+      - "local" or a path    -> embedded ON-DISK (no server, no Docker needed)
+    On-disk embedded mode lets the whole stack run on a laptop with no Docker.
+    (Embedded mode is opened by one process at a time.)
+    """
     s = get_settings()
-    return QdrantClient(url=s.qdrant_url, api_key=s.qdrant_api_key or None)
+    url = (s.qdrant_url or "").strip()
+    if url.startswith(("http://", "https://")):
+        # check_compatibility=False silences the noisy client/server version warning.
+        return QdrantClient(url=url, api_key=s.qdrant_api_key or None, check_compatibility=False)
+    if url == ":memory:":
+        return QdrantClient(location=":memory:")
+    path = "./.engram/qdrant" if url in ("", "local") else url
+    return QdrantClient(path=path)
 
 
 def ensure_collection(dim: int | None = None, client: QdrantClient | None = None) -> None:

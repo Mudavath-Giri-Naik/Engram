@@ -8,7 +8,7 @@ ReasoningResult. Reasoning failures (e.g. unconfigured LLM) surface as a clear
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from engram.api.deps import current_network_id, embedder, incident_repo, vector_store
@@ -60,4 +60,10 @@ def query(
         # Surface clearly; retrieval still returned useful memory.
         return QueryResponse(retrieved=retrieved, reasoning=None, reasoning_error=str(e))
     except Exception as e:  # noqa: BLE001
-        raise HTTPException(status_code=503, detail=f"Reasoning failed: {e}") from e
+        # Surface the real LLM/provider error (don't hide it behind a dead 503).
+        # Retrieval results are still returned and useful.
+        return QueryResponse(
+            retrieved=retrieved,
+            reasoning=None,
+            reasoning_error=f"Reasoning failed: {type(e).__name__}: {e}",
+        )

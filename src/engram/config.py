@@ -77,7 +77,8 @@ class Settings(BaseSettings):
         # so the user gets a clear "add your key" message instead of a provider
         # auth error — and we never make a doomed paid call.
         key = self.llm_api_key.strip()
-        placeholder = (not key) or key.upper().startswith("REPLACE")
+        ku = key.upper()
+        placeholder = (not key) or ku.startswith(("REPLACE", "PASTE")) or "YOUR_" in ku
         return bool(self.llm_provider and self.llm_model and not placeholder)
 
 

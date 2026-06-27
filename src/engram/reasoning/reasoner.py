@@ -9,6 +9,7 @@ fabricate a ReasoningResult — if parsing fails after a retry, we raise.
 from __future__ import annotations
 
 import json
+import os
 import re
 
 from engram.config import get_settings
@@ -16,6 +17,15 @@ from engram.domain.models import FaultQuery, ReasoningResult, RetrievedIncident
 from engram.reasoning.prompts import SYSTEM_PROMPT, build_user_prompt
 
 _FENCE_RE = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
+
+# litellm routes by the provider's native env var. Setting it explicitly makes
+# provider-swapping reliable (e.g. Gemini/AI Studio needs GEMINI_API_KEY;
+# passing api_key alone can be misrouted to Vertex AI in some litellm versions).
+_ENV_BY_PROVIDER = {
+    "anthropic": "ANTHROPIC_API_KEY",
+    "openai": "OPENAI_API_KEY",
+    "gemini": "GEMINI_API_KEY",
+}
 
 
 class ReasoningError(RuntimeError):
@@ -35,20 +45,35 @@ def _model_string() -> str:
     return model if "/" in model else f"{provider}/{model}"
 
 
+_TRAILING_COMMA_RE = re.compile(r",(\s*[}\]])")
+
+
 def _extract_json(text: str) -> dict:
     cleaned = _FENCE_RE.sub("", text).strip()
     # Be tolerant of leading prose: grab the outermost {...} block.
     start, end = cleaned.find("{"), cleaned.rfind("}")
     if start != -1 and end != -1 and end > start:
         cleaned = cleaned[start : end + 1]
-    return json.loads(cleaned)
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        # Tolerate the most common LLM JSON slip: a trailing comma before } or ].
+        repaired = _TRAILING_COMMA_RE.sub(r"\1", cleaned)
+        return json.loads(repaired)
 
 
 def _call_llm(system: str, user: str) -> str:
     import litellm
 
     s = get_settings()
-    resp = litellm.completion(
+    # Export the provider's native key env var so litellm routes correctly.
+    env_name = _ENV_BY_PROVIDER.get(s.llm_provider.strip().lower())
+    if env_name and s.llm_api_key:
+        os.environ[env_name] = s.llm_api_key
+
+    # Ask the provider for strict JSON output where supported (Gemini/OpenAI
+    # honor response_format; if a provider rejects it, fall back without it).
+    kwargs = dict(
         model=_model_string(),
         api_key=s.llm_api_key or None,
         messages=[
@@ -58,6 +83,10 @@ def _call_llm(system: str, user: str) -> str:
         temperature=0.1,
         max_tokens=1500,
     )
+    try:
+        resp = litellm.completion(response_format={"type": "json_object"}, **kwargs)
+    except Exception:
+        resp = litellm.completion(**kwargs)
     return resp["choices"][0]["message"]["content"] or ""
 
 

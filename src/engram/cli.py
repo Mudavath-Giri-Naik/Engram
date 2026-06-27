@@ -59,8 +59,9 @@ def dashboard(
 
 @app.command()
 def migrate() -> None:
-    """Apply Alembic migrations (alembic upgrade head)."""
-    subprocess.run(["alembic", "upgrade", "head"], check=True)
+    """Apply Alembic migrations (python -m alembic upgrade head)."""
+    # Use `python -m alembic` so it works even when the alembic script isn't on PATH.
+    subprocess.run([sys.executable, "-m", "alembic", "upgrade", "head"], check=True)
 
 
 @app.command()
