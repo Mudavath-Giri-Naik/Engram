@@ -1,0 +1,10 @@
+BGP neighbor is 10.0.13.1, remote AS 65001, local AS 65003, external link
+  BGP version 4, remote router ID 0.0.0.0, local router ID 10.0.0.3
+  BGP state = Active
+  Last read 00:00:00, Last write never
+  Hold time is 9, keepalive interval is 3 seconds
+  Configured hold time is 9, keepalive interval is 3 seconds
+  Connections established 0; dropped 0
+  Last reset never
+  No active TCP connection
+Read thread: off  Write thread: off

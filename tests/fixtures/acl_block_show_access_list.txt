@@ -1,0 +1,7 @@
+Standard IP access list BLOCK-DB
+    10 deny   ip 10.20.0.0 0.0.0.255 host 10.30.0.10
+    20 permit ip any any
+Extended IP access list EDGE-IN
+    10 deny   tcp any host 10.30.0.10 eq 5432
+    20 permit ip any any
+        matches: 4123 (10)

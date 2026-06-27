@@ -1,0 +1,30 @@
+# secrets — NEVER commit
+.env.local
+.env
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# models / caches
+.cache/
+*.bin
+
+# os / editor
+.DS_Store
+.idea/
+.vscode/
+
+# containerlab runtime artifacts
+clab-*/
+*.clab.yml.bak
+.tmp/

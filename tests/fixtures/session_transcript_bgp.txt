@@ -1,0 +1,21 @@
+# device: R3
+$ show ip bgp summary
+IPv4 Unicast Summary (VRF default):
+BGP router identifier 10.0.0.3, local AS number 65003 vrf-id 0
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd
+10.0.13.1       4      65001         0         0        0    0    0    never       Active
+10.0.23.2       4      65002       142       145        5    0    0 01:58:21            3
+
+$ show ip bgp neighbors 10.0.13.1
+BGP neighbor is 10.0.13.1, remote AS 65001, local AS 65003, external link
+  BGP state = Active
+  Last reset never
+  No active TCP connection
+
+$ show running-config bgpd
+router bgp 65003
+ neighbor 10.0.13.1 remote-as 65001
+ neighbor 10.0.13.1 timers 3 9
+ address-family ipv4 unicast
+  network 10.0.0.3/32
+ exit-address-family

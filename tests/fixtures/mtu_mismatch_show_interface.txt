@@ -1,0 +1,17 @@
+Interface eth1 is up, line protocol is up
+  Link ups:   1    last: 2026/02/14 09:12:03.001
+  Link downs: 0    last: (never)
+  vrf: default
+  index 3 metric 0 mtu 1500 speed 10000
+  flags: <UP,BROADCAST,RUNNING,MULTICAST>
+  Type: Ethernet
+  HWaddr: aa:c1:ab:1d:2e:3f
+
+Interface eth2 is up, line protocol is up
+  vrf: default
+  index 4 metric 0 mtu 9000 speed 10000
+  flags: <UP,BROADCAST,RUNNING,MULTICAST>
+  Type: Ethernet
+  HWaddr: aa:c1:ab:4a:5b:6c
+
+OSPFv2 log: Packet[DD]: Neighbor 10.0.0.2 MTU mismatch detected (received 9000, mine 1500)
