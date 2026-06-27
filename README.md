@@ -54,7 +54,8 @@ flowchart LR
 - **Structured store**: PostgreSQL 16 + SQLAlchemy 2.0 + Alembic · **Vector store**: Qdrant
 - **Embeddings (local, open-source)**: sentence-transformers (`BAAI/bge-small-en-v1.5`, 384-dim)
 - **Reasoning LLM (swappable, the only paid dep)**: litellm (Anthropic / OpenAI / Gemini)
-- **Capture**: Netmiko + ntc-templates (+ optional Genie) · **Dashboard**: Streamlit
+- **Capture**: Netmiko + ntc-templates (+ optional Genie) · **Dashboard**: static web app (`web/index.html`, vanilla JS — Vercel-deployable, no build); legacy Streamlit dashboard also included
+- **Deploy**: `Dockerfile` + `render.yaml` (backend on Render/Railway) + Vercel (frontend) — see `DEPLOY.md`
 - **Demo network**: Containerlab + FRRouting · **Infra**: docker-compose · **Quality**: pytest, ruff, mypy, pre-commit
 
 ## Incident schema (key fields)
@@ -118,25 +119,36 @@ Response (abridged):
 
 ## Quickstart
 
+**Windows, one click:** from the project folder run `./start_local.ps1` — it brings up
+infra (if Docker), migrates, bootstraps, and launches the API + web dashboard, then
+opens the browser. Otherwise, step by step:
+
 ```bash
 # 1) install
-pip install -e ".[dev,dashboard]"
+pip install -e .
 
 # 2) configure secrets (see "What you must fill in" below)
 cp .env.example .env.local      # then edit .env.local
+#   no Docker?  cp .env.local.example-no-docker .env.local   (SQLite + embedded Qdrant)
 
-# 3) infrastructure
+# 3) infrastructure (Docker profile)
 docker compose up -d            # Postgres + Qdrant
 
 # 4) schema + bootstrap tenant + Qdrant collection
-make migrate                    # alembic upgrade head + engram bootstrap
+python -m alembic upgrade head
+python -m engram.cli bootstrap
 
-# 5) run
-make api                        # FastAPI at http://localhost:8000  (/docs)
-make dashboard                  # Streamlit at http://localhost:8501
+# 5) run the API
+python -m engram.cli serve      # FastAPI at http://localhost:8000  (/docs)
 
-# 6) seed REAL incidents (needs Docker + Containerlab)
-#    follow scripts/seed_runbook.md
+# 6) open the web dashboard (static; no build)
+python -m http.server 5500 --directory web   # -> http://localhost:5500
+#   then in the dashboard's Settings: API URL http://localhost:8000, your API key
+
+# 7) (optional) load sample data, or capture REAL Cisco data:
+python scripts/seed_demo_api.py                 # quick sample incidents
+python scripts/capture_devnet.py                # real Cisco IOS XE via DevNet sandbox
+#   or follow scripts/seed_runbook.md for the Containerlab fault demo
 
 # 7) the demo query
 curl -s -X POST localhost:8000/v1/query \
