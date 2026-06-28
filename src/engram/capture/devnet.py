@@ -1,25 +1,21 @@
-"""Server-side capture from a Cisco DevNet Always-On sandbox (real IOS XE over SSH).
+"""Server-side capture from a Cisco DevNet sandbox (real IOS XE over SSH).
 
 Used by POST /v1/capture/devnet so the web dashboard can pull live Cisco data with
-one click. Credentials default to the public Always-On IOS XE sandbox and can be
-overridden via env (DEVNET_HOST/USER/PASSWORD) or the request body.
+one click. Connection details come from settings (.env.local: DEVNET_HOST /
+DEVNET_USER / DEVNET_PASSWORD / DEVNET_PORT / DEVNET_DEVICE_TYPE) and can be
+overridden per-request.
+
+Note: reserved sandboxes use a private IP (e.g. 10.10.20.x) reachable only over
+the Cisco DevNet VPN — the API host must be on that VPN.
 """
 
 from __future__ import annotations
 
-import os
-
 from engram.capture.builder import build_incident
 from engram.capture.netmiko_session import CommandResult
+from engram.config import get_settings
 from engram.domain.enums import Layer, Outcome, Protocol, Scope, Severity
 from engram.domain.models import Incident
-
-DEVNET_DEFAULTS = {
-    "host": os.environ.get("DEVNET_HOST", "sandbox-iosxe-latest-1.cisco.com"),
-    "user": os.environ.get("DEVNET_USER", "admin"),
-    "password": os.environ.get("DEVNET_PASSWORD", "C1sco12345"),
-    "device_type": "cisco_xe",
-}
 
 DEFAULT_COMMANDS = [
     "show version",
@@ -35,6 +31,7 @@ def run_devnet_capture(
     host: str | None = None,
     user: str | None = None,
     password: str | None = None,
+    port: int | None = None,
     device_type: str | None = None,
     commands: list[str] | None = None,
     protocols: list[Protocol] | None = None,
@@ -42,14 +39,16 @@ def run_devnet_capture(
     """SSH into the Cisco device, run real show commands, return an Incident draft."""
     from netmiko import ConnectHandler
 
-    host = host or DEVNET_DEFAULTS["host"]
-    user = user or DEVNET_DEFAULTS["user"]
-    password = password or DEVNET_DEFAULTS["password"]
-    device_type = device_type or DEVNET_DEFAULTS["device_type"]
+    s = get_settings()
+    host = host or s.devnet_host
+    user = user or s.devnet_user
+    password = password or s.devnet_password
+    port = port or s.devnet_port
+    device_type = device_type or s.devnet_device_type
     commands = commands or DEFAULT_COMMANDS
 
     conn = ConnectHandler(
-        device_type=device_type, host=host, username=user, password=password,
+        device_type=device_type, host=host, port=port, username=user, password=password,
         fast_cli=False, conn_timeout=45,
     )
     try:

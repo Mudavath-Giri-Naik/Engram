@@ -6,7 +6,8 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from engram.api.deps import current_network_id, embedder, incident_repo, vector_store
-from engram.capture.devnet import DEVNET_DEFAULTS, run_devnet_capture
+from engram.capture.devnet import run_devnet_capture
+from engram.config import get_settings
 from engram.domain.enums import Protocol
 from engram.embedding.embedder import Embedder
 from engram.ingest.pipeline import ingest_incident
@@ -48,7 +49,7 @@ def capture_devnet(
     emb: Embedder = Depends(embedder),
 ) -> CaptureResponse:
     """Pull REAL output from a Cisco DevNet IOS XE device and store it as an incident."""
-    host = req.host or DEVNET_DEFAULTS["host"]
+    host = req.host or get_settings().devnet_host
     try:
         protocols = [Protocol(p.upper()) for p in req.protocols if p.upper() in Protocol.__members__]
         inc = run_devnet_capture(

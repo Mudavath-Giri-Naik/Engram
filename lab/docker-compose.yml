@@ -1,0 +1,38 @@
+# Engram local lab — two real FRR routers with eBGP between them.
+# Runs on Docker Desktop straight from PowerShell (no WSL, no containerlab, no VPN).
+#
+#   docker compose -f lab/docker-compose.yml up -d
+#
+# r1 (AS 65001, 172.20.0.11)  <--eBGP-->  r2 (AS 65002, 172.20.0.12)
+
+name: engram-lab
+
+services:
+  r1:
+    image: quay.io/frrouting/frr:9.1.0
+    container_name: engram-r1
+    privileged: true
+    volumes:
+      - ./daemons:/etc/frr/daemons
+      - ./r1.conf:/etc/frr/frr.conf
+    networks:
+      labnet:
+        ipv4_address: 172.20.0.11
+
+  r2:
+    image: quay.io/frrouting/frr:9.1.0
+    container_name: engram-r2
+    privileged: true
+    volumes:
+      - ./daemons:/etc/frr/daemons
+      - ./r2.conf:/etc/frr/frr.conf
+    networks:
+      labnet:
+        ipv4_address: 172.20.0.12
+
+networks:
+  labnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

@@ -37,7 +37,12 @@ def get_engine() -> Engine:
         path_part = url.split("///", 1)[-1]
         if path_part and path_part != ":memory:":
             Path(path_part).expanduser().resolve().parent.mkdir(parents=True, exist_ok=True)
-    return create_engine(url, pool_pre_ping=True, future=True)
+    is_sqlite = url.startswith("sqlite")
+    kwargs: dict = {"pool_pre_ping": True, "future": True}
+    if not is_sqlite:
+        # Generous, self-recycling pool so polling endpoints can't exhaust it.
+        kwargs.update(pool_size=20, max_overflow=40, pool_timeout=10, pool_recycle=1800)
+    return create_engine(url, **kwargs)
 
 
 @lru_cache(maxsize=1)

@@ -27,6 +27,16 @@ def bootstrap_all() -> dict:
                 name="bootstrap",
             )
         result["tenant"] = s.engram_bootstrap_network_id
+
+        # 3) seed a couple of extra demo networks so the multi-tenant overview is
+        #    populated (each gets its own API key; harmless if they already exist).
+        with session_scope() as session:
+            tr = TenantRepo(session)
+            for net, key in (
+                ("branch-west-network", "branch-west-key"),
+                ("datacenter-east-network", "datacenter-east-key"),
+            ):
+                tr.upsert(api_key=key, network_id=net, name="demo")
     else:
         result["tenant"] = "SKIPPED (set ENGRAM_BOOTSTRAP_API_KEY + ENGRAM_BOOTSTRAP_NETWORK_ID)"
 
